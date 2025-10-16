@@ -69,3 +69,8 @@ return card;
 function handleError(error) {
     console.error('An error occurred: ${error.message}');
 }
+
+//Step 7
+fetchProductsThen();
+fetchProductsAsync();
+
