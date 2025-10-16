@@ -64,3 +64,8 @@ function createProductCard(product) {
     
 return card;
 }
+
+//Step 6
+function handleError(error) {
+    console.error('An error occurred: ${error.message}');
+}
