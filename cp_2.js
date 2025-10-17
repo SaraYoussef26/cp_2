@@ -1,4 +1,4 @@
-function fetchProductsThen() {}
+function fetchProductsThen() {
     fetch('https://www.course-api.com/javascript-store-products')
     .then(response => {
         if (!response.ok) {
@@ -9,15 +9,16 @@ function fetchProductsThen() {}
 
     .then(data => {
         data.forEach(product =>{
-            console.log(product.name);
-
-        })
+            console.log(product.fields.name);
+        });
     
     })
 
         .catch(error => {
-            console.error('Fetch error:', error);
+            handleError(error);
         });
+    
+    }
 
 //Step 4
 async function fetchProductsAsync() {
@@ -27,7 +28,7 @@ async function fetchProductsAsync() {
             throw new Error (`HTTP error! status: ${response.status}`);
         }
         const products = await response.json ();
-        displayProducts(product);
+        displayProducts(products);
         } catch (error) {
             handleError(error);
         }
@@ -36,34 +37,36 @@ async function fetchProductsAsync() {
 //Step 5
 function displayProducts(products){
     const container = document.querySelector("#product-container");
-    container.innerHTML=" ";
     const firstFiveProducts = products.slice(0,5);
     if (firstFiveProducts.length===0) {
         container.innerHTML='<div class="loading">No products found.</div>';
         return; 
     }
-    firstFiveProducts.forEach(product=> {
-        const productCard = createProductCard(product);
-        container.appendChild(productCard);
-    });
-    }
-
+    const productHTML = firstFiveProducts.map(product =>
+    {
+        return createProductCard(product);
+    }).join('');
+    container.innerHTML = productHTML;
+}
 
 function createProductCard(product) {
-    const card = document.createElement("div"); 
-    card.className= "product-card";
     const{name, price, image}= product.fields;
     const imageURL = image [0].url;
-    card.innerHTML =`
-    <img src="${imageUrl}" alt="${name}" class="product-image">
-        <div class="product-info">
-            <h3 class="product-name">${name}</h3>
-            <p class="product-price">$${(price / 100).toFixed(2)}</p>
+    return `
+    <div class="product-card" data-id="${product.id}">
+        <div class="product-image-container">
+            <img src="${imageURL}" alt="${name}"
+class="product-image">
         </div>
-    `;
-    
-return card;
-}
+        <div class="product-info">
+        <h3 class="product-name">${name}</h3> 
+        <p class="product-price">$${ (price /
+100) . toFixed (2)}</p>
+            </div>
+        </div>
+        `;
+        }
+
 
 //Step 6
 function handleError(error) {
@@ -73,4 +76,3 @@ function handleError(error) {
 //Step 7
 fetchProductsThen();
 fetchProductsAsync();
-
